@@ -2,6 +2,11 @@
   "name": "socketer",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "server": "bun run ./src/server.ts",
+    "compiler": "bun run ./src/compiler.ts",
+    "build": "bun run ./src/build.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

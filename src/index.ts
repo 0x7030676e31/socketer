@@ -1,6 +1,7 @@
 import identify from "../payload.json" assert { type: "json" };
+import { EventEmitter } from "node:events";
 
-export default class Socket {
+export default class Socket extends EventEmitter {
   public static readonly GATEWAY_URL = "wss://gateway.discord.gg";
   public static readonly GATEWAY_VERSION = 9;
   public static readonly GATEWAY_ENCODING = "json";
@@ -21,6 +22,8 @@ export default class Socket {
   private _onClose: typeof Socket.prototype.onClose;
 
   constructor(token: string) {
+    super();
+
     this._onOpen = this.onOpen.bind(this);
     this._onMessage = this.onMessage.bind(this);
     this._onClose = this.onClose.bind(this);
@@ -88,6 +91,7 @@ export default class Socket {
 
   private onOpen() {
     this.socket?.send(JSON.stringify(this.sessionId ? this.getResume() : this.getIdentity()));
+    this.emit("open")
   }
 
   private onMessage(event: MessageEvent) {
@@ -100,6 +104,10 @@ export default class Socket {
 
       case 1:
         this.heartbeat();
+        break;
+    
+      case 6:
+        this.emit("resume");
         break;
 
       case 7:
@@ -126,6 +134,8 @@ export default class Socket {
       this.sessionId = payload.session_id;
       this.reconnectUrl = payload.resume_gateway_url;
     }
+
+    this.emit("dispatch", payload, event);
   }
 
   private heartbeat() {
@@ -136,6 +146,8 @@ export default class Socket {
     if (event.code === 4004) {
       throw new Error("Gatway authentication failed: invalid token");
     }
+
+    this.emit("close", event.wasClean, event.code, event.reason);
 
     this.gatewayFails++;
     if (this.gatewayFails > 4) {

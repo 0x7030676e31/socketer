@@ -47,7 +47,6 @@ class Server {
     
     if (hash !== this.hash) {
       this.log(`Writing ${content.byteLength} bytes to file...`);
-      console.log(content.byteLength, this.hash, hash);
       this.hash = hash;
     }
 
@@ -59,11 +58,19 @@ class Server {
     Bun.serve({
       port,
       fetch: async request => {
-        const data = await request.json();
-        const { payload, event } = data as Payload;
+        if (request.method === "POST") {
+          const data = await request.json();
+          const { payload, event } = data as Payload;
+          
+          this.process(payload, event);
+        }
 
-        this.process(payload, event);
-        return new Response("Ok", { status: 200 });
+        const resp  = new Response("Ok", { status: 200 });
+        resp.headers.set("Access-Control-Allow-Origin", "*");
+        resp.headers.set("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        resp.headers.set("Access-Control-Allow-Headers", "Content-Type");
+
+        return resp;
       },
     });
   }
