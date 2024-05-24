@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/24/2024 @ 8:20:50 PM
+// 5/24/2024 @ 8:23:10 PM
 // By: @0x7030676e31
 
 export type CHANNEL_CREATE = {
@@ -470,6 +470,7 @@ export type MESSAGE_CREATE = {
 			deaf: boolean;
 			communication_disabled_until: null | string;
 			avatar: null | string;
+			unusual_dm_activity_until?: string;
 		};
 		id: string;
 		global_name: null | string;
@@ -696,8 +697,8 @@ export type MESSAGE_CREATE = {
 				width: number;
 				url: string;
 				proxy_url?: string;
-				placeholder_version: number;
-				placeholder: string;
+				placeholder_version?: number;
+				placeholder?: string;
 				height: number;
 			};
 			timestamp?: string;
@@ -910,7 +911,7 @@ export type MESSAGE_REACTION_REMOVE = {
 	message_id: string;
 	emoji: {
 		name: string;
-		id: string;
+		id: null | string;
 	};
 	channel_id: string;
 	burst: boolean;
@@ -1091,8 +1092,8 @@ export type MESSAGE_UPDATE = {
 			width: number;
 			url: string;
 			proxy_url?: string;
-			placeholder_version: number;
-			placeholder: string;
+			placeholder_version?: number;
+			placeholder?: string;
 			height: number;
 		};
 		reference_id?: string;
