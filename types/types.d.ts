@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/24/2024 @ 9:28:21 PM
+// 5/24/2024 @ 9:31:42 PM
 // By: @0x7030676e31
 
 export type CHANNEL_CREATE = {
@@ -48,6 +48,7 @@ export type CHANNEL_DELETE = {
 	user_limit?: number;
 	rtc_region?: null;
 	bitrate?: number;
+	last_pin_timestamp?: string;
 };
 
 export type CHANNEL_STATUSES = {
@@ -739,7 +740,12 @@ export type MESSAGE_CREATE = {
 		id: string;
 		global_name: null | string;
 		discriminator: string;
-		clan: null;
+		clan: null | {
+			tag: null;
+			identity_guild_id: null;
+			identity_enabled: boolean;
+			badge: null;
+		};
 		avatar_decoration_data: null | {
 			sku_id: string;
 			asset: string;
@@ -1000,7 +1006,12 @@ export type MESSAGE_CREATE = {
 			id: string;
 			global_name: null | string;
 			discriminator: string;
-			clan?: null;
+			clan?: null | {
+				tag: null;
+				identity_guild_id: null;
+				identity_enabled: boolean;
+				badge: null;
+			};
 			avatar_decoration_data?: null | {
 				sku_id: string;
 				asset: string;
