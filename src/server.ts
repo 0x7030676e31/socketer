@@ -17,7 +17,7 @@ interface Payload {
 
 class Server {
   private types: { [key: string]: Type } = {};
-  private lastSize = 0;
+  private hash: BigInt = 0n;
 
   public constructor() {
     process.addListener("exit", this.exit.bind(this));
@@ -33,6 +33,7 @@ class Server {
     }
 
     this.types = await file.exists() ? await this.read(file) : {};
+    this.hash = BigInt(Bun.hash(await file.arrayBuffer()));
     setInterval(async () => await this.write(), WRITE_INTERVAL);
   }
 
@@ -42,9 +43,12 @@ class Server {
 
   public async write() {
     const content = Bun.deflateSync(JSON.stringify(this.types));
-    if (content.byteLength !== this.lastSize) {
+    const hash = BigInt(Bun.hash(content));
+    
+    if (hash !== this.hash) {
       this.log(`Writing ${content.byteLength} bytes to file...`);
-      this.lastSize = content.byteLength;
+      console.log(content.byteLength, this.hash, hash);
+      this.hash = hash;
     }
 
     await Bun.write(PATH, content);

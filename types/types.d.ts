@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/24/2024 @ 10:08:07 PM
+// 5/24/2024 @ 10:49:19 PM
 // By: @0x7030676e31
 
 export type CALL_CREATE = {
@@ -1200,7 +1200,7 @@ export type MESSAGE_CREATE = {
 export type MESSAGE_DELETE = {
 	id: string;
 	channel_id: string;
-	guild_id: string;
+	guild_id?: string;
 };
 
 export type MESSAGE_DELETE_BULK = {
@@ -1646,7 +1646,7 @@ export type PRESENCE_UPDATE = {
 			sku_id: string;
 			asset: string;
 		};
-		avatar?: string;
+		avatar?: null | string;
 		public_flags?: number;
 	};
 	status: string;
@@ -1791,9 +1791,21 @@ export type READY = {
 			created_at: number;
 			timestamps: {
 				end: number;
+				start?: number;
 			};
-			emoji: {
+			emoji?: {
 				name: string;
+			};
+			sync_id?: string;
+			session_id?: string;
+			party?: {
+				id: string;
+			};
+			flags?: number;
+			details?: string;
+			assets?: {
+				large_text: string;
+				large_image: string;
 			};
 		}[];
 		active?: boolean;
@@ -2185,6 +2197,7 @@ export type READY_SUPPLEMENTAL = {
 				sync_id?: string;
 				party?: {
 					id?: string;
+					size?: number[];
 				};
 				flags?: number;
 				platform?: string;
@@ -2270,9 +2283,21 @@ export type SESSIONS_REPLACE = {
 		created_at: number;
 		timestamps?: {
 			end: number;
+			start?: number;
 		};
 		emoji?: {
 			name: string;
+		};
+		sync_id?: string;
+		session_id?: string;
+		party?: {
+			id: string;
+		};
+		flags?: number;
+		details?: string;
+		assets?: {
+			large_text: string;
+			large_image: string;
 		};
 	}[];
 	active?: boolean;
@@ -2300,6 +2325,7 @@ export type THREAD_CREATE = {
 	id: string;
 	guild_id: string;
 	flags: number;
+	applied_tags?: string[];
 };
 
 export type THREAD_LIST_SYNC = {
