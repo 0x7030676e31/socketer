@@ -1,6 +1,34 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/24/2024 @ 9:31:42 PM
+// 5/24/2024 @ 10:08:07 PM
 // By: @0x7030676e31
+
+export type CALL_CREATE = {
+	voice_states: {
+		user_id: string;
+		suppress: boolean;
+		session_id: string;
+		self_video: boolean;
+		self_mute: boolean;
+		self_deaf: boolean;
+		request_to_speak_timestamp: null;
+		mute: boolean;
+		deaf: boolean;
+		channel_id: string;
+	}[];
+	ringing: [];
+	region: string;
+	message_id: string;
+	embedded_activities: [];
+	channel_id: string;
+};
+
+export type CALL_UPDATE = {
+	ringing: string[];
+	region: string;
+	message_id: string;
+	guild_id: null;
+	channel_id: string;
+};
 
 export type CHANNEL_CREATE = {
 	version: number;
@@ -49,6 +77,12 @@ export type CHANNEL_DELETE = {
 	rtc_region?: null;
 	bitrate?: number;
 	last_pin_timestamp?: string;
+};
+
+export type CHANNEL_PINS_UPDATE = {
+	last_pin_timestamp: string;
+	channel_id: string;
+	guild_id: string;
 };
 
 export type CHANNEL_STATUSES = {
@@ -137,6 +171,20 @@ export type GUILD_BAN_ADD = {
 		clan: null;
 		avatar_decoration_data: null;
 		avatar: null | string;
+	};
+	guild_id: string;
+};
+
+export type GUILD_BAN_REMOVE = {
+	user: {
+		username: string;
+		public_flags: number;
+		id: string;
+		global_name: string;
+		discriminator: string;
+		clan: null;
+		avatar_decoration_data: null;
+		avatar: string;
 	};
 	guild_id: string;
 };
@@ -416,7 +464,8 @@ export type GUILD_MEMBER_LIST_UPDATE = {
 						created_at: number;
 						url?: string;
 						timestamps?: {
-							start: number;
+							start?: number;
+							end?: number;
 						};
 						session_id?: string;
 						details?: string;
@@ -427,6 +476,9 @@ export type GUILD_MEMBER_LIST_UPDATE = {
 							large_image: string;
 						};
 						application_id?: string;
+						emoji?: {
+							name: string;
+						};
 					}[];
 				};
 				premium_since: null;
@@ -451,7 +503,10 @@ export type GUILD_MEMBER_LIST_UPDATE = {
 					discriminator: string;
 					clan: null;
 					bot: boolean;
-					avatar_decoration_data: null;
+					avatar_decoration_data: null | {
+						sku_id: string;
+						asset: string;
+					};
 					avatar: string;
 				};
 				roles: string[];
@@ -720,7 +775,7 @@ export type MESSAGE_CREATE = {
 	mentions: {
 		username: string;
 		public_flags: number;
-		member: {
+		member?: {
 			roles: string[];
 			premium_since: null | string;
 			pending: boolean;
@@ -822,6 +877,8 @@ export type MESSAGE_CREATE = {
 			url: string;
 			proxy_url: string;
 			height: number;
+			placeholder_version: number;
+			placeholder: string;
 		};
 		content_scan_version?: number;
 		reference_id?: string;
@@ -894,7 +951,7 @@ export type MESSAGE_CREATE = {
 	message_reference?: {
 		type: number;
 		message_id: string;
-		guild_id: string;
+		guild_id?: string;
 		channel_id: string;
 	};
 	interaction_metadata?: {
@@ -906,7 +963,10 @@ export type MESSAGE_CREATE = {
 			global_name: string;
 			discriminator: string;
 			clan: null;
-			avatar_decoration_data: null;
+			avatar_decoration_data: null | {
+				sku_id: string;
+				asset: string;
+			};
 			avatar: null | string;
 		};
 		type: number;
@@ -1095,14 +1155,17 @@ export type MESSAGE_CREATE = {
 			global_name: string;
 			discriminator: string;
 			clan: null;
-			avatar_decoration_data: null;
+			avatar_decoration_data: null | {
+				sku_id: string;
+				asset: string;
+			};
 			avatar: null | string;
 		};
 		type: number;
 		name: string;
 		member: {
 			roles: string[];
-			premium_since: null;
+			premium_since: null | string;
 			pending: boolean;
 			nick: null | string;
 			mute: boolean;
@@ -1128,10 +1191,20 @@ export type MESSAGE_CREATE = {
 		}[];
 		allow_multiselect: boolean;
 	};
+	call?: {
+		participants: string[];
+		ended_timestamp: null;
+	};
 };
 
 export type MESSAGE_DELETE = {
 	id: string;
+	channel_id: string;
+	guild_id: string;
+};
+
+export type MESSAGE_DELETE_BULK = {
+	ids: string[];
 	channel_id: string;
 	guild_id: string;
 };
@@ -1413,11 +1486,11 @@ export type MESSAGE_UPDATE = {
 	content?: string;
 	components?: {
 		type: number;
-		id: string;
+		id: string | number;
 		components: {
 			type: number;
 			style?: number;
-			id: string;
+			id: string | number;
 			emoji?: {
 				name: string;
 				id?: string;
@@ -1491,7 +1564,7 @@ export type MESSAGE_UPDATE = {
 		name: string;
 		member: {
 			roles: string[];
-			premium_since: null;
+			premium_since: null | string;
 			pending: boolean;
 			nick: null | string;
 			mute: boolean;
@@ -1528,7 +1601,12 @@ export type PASSIVE_UPDATE_V2 = {
 			global_name: null | string;
 			display_name: null | string;
 			discriminator: string;
-			clan: null;
+			clan: null | {
+				tag: string;
+				identity_guild_id: string;
+				identity_enabled: boolean;
+				badge: string;
+			};
 			bot: boolean;
 			avatar_decoration_data: null | {
 				sku_id: string;
@@ -1623,7 +1701,12 @@ export type READY = {
 		id: string;
 		global_name: null | string;
 		discriminator: string;
-		clan: null;
+		clan: null | {
+			tag: string;
+			identity_guild_id: string;
+			identity_enabled: boolean;
+			badge: string;
+		};
 		avatar_decoration_data: null | {
 			sku_id: string;
 			asset: string;
@@ -1706,6 +1789,12 @@ export type READY = {
 			name: string;
 			id: string;
 			created_at: number;
+			timestamps: {
+				end: number;
+			};
+			emoji: {
+				name: string;
+			};
 		}[];
 		active?: boolean;
 	}[];
@@ -2179,10 +2268,10 @@ export type SESSIONS_REPLACE = {
 		name: string;
 		id: string;
 		created_at: number;
-		timestamps: {
+		timestamps?: {
 			end: number;
 		};
-		emoji: {
+		emoji?: {
 			name: string;
 		};
 	}[];
@@ -2554,14 +2643,18 @@ export type VOICE_STATE_UPDATE = {
 };
 
 export type Events =
+	| { t: "CALL_CREATE", d: CALL_CREATE }
+	| { t: "CALL_UPDATE", d: CALL_UPDATE }
 	| { t: "CHANNEL_CREATE", d: CHANNEL_CREATE }
 	| { t: "CHANNEL_DELETE", d: CHANNEL_DELETE }
+	| { t: "CHANNEL_PINS_UPDATE", d: CHANNEL_PINS_UPDATE }
 	| { t: "CHANNEL_STATUSES", d: CHANNEL_STATUSES }
 	| { t: "CHANNEL_UPDATE", d: CHANNEL_UPDATE }
 	| { t: "CONVERSATION_SUMMARY_UPDATE", d: CONVERSATION_SUMMARY_UPDATE }
 	| { t: "GUILD_APPLICATION_COMMAND_INDEX_UPDATE", d: GUILD_APPLICATION_COMMAND_INDEX_UPDATE }
 	| { t: "GUILD_AUDIT_LOG_ENTRY_CREATE", d: GUILD_AUDIT_LOG_ENTRY_CREATE }
 	| { t: "GUILD_BAN_ADD", d: GUILD_BAN_ADD }
+	| { t: "GUILD_BAN_REMOVE", d: GUILD_BAN_REMOVE }
 	| { t: "GUILD_CREATE", d: GUILD_CREATE }
 	| { t: "GUILD_INTEGRATIONS_UPDATE", d: GUILD_INTEGRATIONS_UPDATE }
 	| { t: "GUILD_MEMBERS_CHUNK", d: GUILD_MEMBERS_CHUNK }
@@ -2574,6 +2667,7 @@ export type Events =
 	| { t: "MESSAGE_ACK", d: MESSAGE_ACK }
 	| { t: "MESSAGE_CREATE", d: MESSAGE_CREATE }
 	| { t: "MESSAGE_DELETE", d: MESSAGE_DELETE }
+	| { t: "MESSAGE_DELETE_BULK", d: MESSAGE_DELETE_BULK }
 	| { t: "MESSAGE_POLL_VOTE_ADD", d: MESSAGE_POLL_VOTE_ADD }
 	| { t: "MESSAGE_POLL_VOTE_REMOVE", d: MESSAGE_POLL_VOTE_REMOVE }
 	| { t: "MESSAGE_REACTION_ADD", d: MESSAGE_REACTION_ADD }
