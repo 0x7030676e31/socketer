@@ -1,4 +1,4 @@
-import identify from "./payload.json" assert { type: "json" };
+import identify from "../payload.json" assert { type: "json" };
 
 export default class Socket {
   public static readonly GATEWAY_URL = "wss://gateway.discord.gg";
