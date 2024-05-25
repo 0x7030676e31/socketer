@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/24/2024 @ 11:59:06 PM
+// 5/25/2024 @ 4:09:05 PM
 // By: @0x7030676e31
 
 export type CALL_CREATE = {
@@ -58,7 +58,7 @@ export type CHANNEL_DELETE = {
 	version: number;
 	type: number;
 	topic?: null | string;
-	rate_limit_per_user: number;
+	rate_limit_per_user?: number;
 	position: number;
 	permission_overwrites: {
 		type: number;
@@ -66,10 +66,10 @@ export type CHANNEL_DELETE = {
 		deny: string;
 		allow: string;
 	}[];
-	parent_id: string;
-	nsfw: boolean;
+	parent_id: null | string;
+	nsfw?: boolean;
 	name: string;
-	last_message_id: null | string;
+	last_message_id?: null | string;
 	id: string;
 	guild_id: string;
 	flags: number;
@@ -205,8 +205,12 @@ export type GUILD_BAN_ADD = {
 		global_name: null | string;
 		discriminator: string;
 		clan: null;
-		avatar_decoration_data: null;
+		avatar_decoration_data: null | {
+			sku_id: string;
+			asset: string;
+		};
 		avatar: null | string;
+		bot?: boolean;
 	};
 	guild_id: string;
 };
@@ -219,7 +223,10 @@ export type GUILD_BAN_REMOVE = {
 		global_name: string;
 		discriminator: string;
 		clan: null;
-		avatar_decoration_data: null;
+		avatar_decoration_data: null | {
+			sku_id: string;
+			asset: string;
+		};
 		avatar: string;
 	};
 	guild_id: string;
@@ -473,6 +480,10 @@ export type GUILD_CREATE = {
 		video_quality_mode?: number;
 	}[];
 	application_command_counts: {};
+};
+
+export type GUILD_DELETE = {
+	id: string;
 };
 
 export type GUILD_INTEGRATIONS_UPDATE = {
@@ -756,12 +767,26 @@ export type GUILD_MEMBER_LIST_UPDATE = {
 	}[];
 };
 
-export type GUILD_MEMBER_UPDATE = {
+export type GUILD_MEMBER_REMOVE = {
 	user: {
 		username: string;
 		public_flags: number;
 		id: string;
 		global_name: string;
+		discriminator: string;
+		clan: null;
+		avatar_decoration_data: null;
+		avatar: string;
+	};
+	guild_id: string;
+};
+
+export type GUILD_MEMBER_UPDATE = {
+	user: {
+		username: string;
+		public_flags: number;
+		id: string;
+		global_name: null | string;
 		discriminator: string;
 		clan: null;
 		avatar_decoration_data: null | {
@@ -784,6 +809,12 @@ export type GUILD_MEMBER_UPDATE = {
 	avatar: null | string;
 	mute?: boolean;
 	deaf?: boolean;
+};
+
+export type GUILD_ROLE_DELETE = {
+	version: number;
+	role_id: string;
+	guild_id: string;
 };
 
 export type GUILD_ROLE_UPDATE = {
@@ -810,7 +841,7 @@ export type GUILD_SCHEDULED_EVENT_USER_ADD = {
 	response: number;
 	guild_scheduled_event_id: string;
 	guild_id: string;
-	guild_scheduled_event_exception_id: string;
+	guild_scheduled_event_exception_id?: string;
 };
 
 export type GUILD_UPDATE = {
@@ -820,7 +851,7 @@ export type GUILD_UPDATE = {
 	afk_channel_id: null | string;
 	inventory_settings: null;
 	vanity_url_code: null | string;
-	splash: string;
+	splash: null | string;
 	icon: string;
 	widget_enabled: boolean;
 	rules_channel_id: null | string;
@@ -828,7 +859,7 @@ export type GUILD_UPDATE = {
 	premium_tier: number;
 	nsfw: boolean;
 	system_channel_flags: number;
-	system_channel_id: string;
+	system_channel_id: null | string;
 	version: number;
 	max_members: number;
 	afk_timeout: number;
@@ -865,7 +896,7 @@ export type GUILD_UPDATE = {
 		};
 	}[];
 	owner_id: string;
-	incidents_data: {
+	incidents_data: null | {
 		raid_detected_at: null | string;
 		invites_disabled_until: null | string;
 		dms_disabled_until: null | string;
@@ -882,7 +913,7 @@ export type GUILD_UPDATE = {
 		animated: boolean;
 	}[];
 	public_updates_channel_id: null | string;
-	widget_channel_id: string;
+	widget_channel_id: null | string;
 	home_header: null | string;
 	stickers: {
 		version: number;
@@ -902,6 +933,12 @@ export type GUILD_UPDATE = {
 	mfa_level: number;
 	name: string;
 	max_presences: null;
+};
+
+export type INTEGRATION_DELETE = {
+	id: string;
+	application_id: string;
+	guild_id: string;
 };
 
 export type INTEGRATION_UPDATE = {
@@ -1333,6 +1370,28 @@ export type MESSAGE_CREATE = {
 			name: string;
 			id: string;
 		};
+		thread?: {
+			type: number;
+			total_message_sent: number;
+			thread_metadata: {
+				locked: boolean;
+				create_timestamp: string;
+				auto_archive_duration: number;
+				archived: boolean;
+				archive_timestamp: string;
+			};
+			rate_limit_per_user: number;
+			parent_id: string;
+			owner_id: string;
+			name: string;
+			message_count: number;
+			member_ids_preview: string[];
+			member_count: number;
+			last_message_id: string;
+			id: string;
+			guild_id: string;
+			flags: number;
+		};
 	};
 	sticker_items?: {
 		name: string;
@@ -1386,6 +1445,10 @@ export type MESSAGE_CREATE = {
 	call?: {
 		participants: string[];
 		ended_timestamp: null;
+	};
+	activity?: {
+		type: number;
+		party_id: string;
 	};
 };
 
@@ -1540,13 +1603,44 @@ export type MESSAGE_UPDATE = {
 				sku_id: string;
 				asset: string;
 			};
-			avatar: string;
+			avatar: null | string;
 		}[];
 		mention_roles: [];
 		mention_everyone: boolean;
 		id: string;
 		flags: number;
-		embeds: [];
+		embeds: {
+			video: {
+				width: number;
+				url: string;
+				placeholder_version: number;
+				placeholder: string;
+				height: number;
+				proxy_url: string;
+			};
+			url: string;
+			type: string;
+			title?: string;
+			thumbnail: {
+				width: number;
+				url: string;
+				proxy_url: string;
+				placeholder_version: number;
+				placeholder: string;
+				height: number;
+			};
+			provider: {
+				url: string;
+				name: string;
+			};
+			description?: string;
+			content_scan_version: number;
+			color?: number;
+			author?: {
+				url: string;
+				name: string;
+			};
+		}[];
 		edited_timestamp: null | string;
 		content: string;
 		components: [];
@@ -1609,7 +1703,7 @@ export type MESSAGE_UPDATE = {
 			sku_id: string;
 			asset: string;
 		};
-		avatar: string;
+		avatar: null | string;
 	}[];
 	mention_roles?: [];
 	mention_everyone?: boolean;
@@ -2376,6 +2470,7 @@ export type READY_SUPPLEMENTAL = {
 				desktop?: string;
 				mobile?: string;
 				web?: string;
+				embedded?: string;
 			};
 			activities: {
 				type: number;
@@ -2473,6 +2568,10 @@ export type READY_SUPPLEMENTAL = {
 	}[];
 	game_invites: [];
 	disclose: string[];
+};
+
+export type RESUMED = {
+	_trace: string[];
 };
 
 export type SESSIONS_REPLACE = {
@@ -2997,6 +3096,11 @@ export type VOICE_STATE_UPDATE = {
 	self_stream?: boolean;
 };
 
+export type WEBHOOKS_UPDATE = {
+	guild_id: string;
+	channel_id: string;
+};
+
 export type Events =
 	| { t: "CALL_CREATE", d: CALL_CREATE }
 	| { t: "CALL_UPDATE", d: CALL_UPDATE }
@@ -3012,13 +3116,17 @@ export type Events =
 	| { t: "GUILD_BAN_ADD", d: GUILD_BAN_ADD }
 	| { t: "GUILD_BAN_REMOVE", d: GUILD_BAN_REMOVE }
 	| { t: "GUILD_CREATE", d: GUILD_CREATE }
+	| { t: "GUILD_DELETE", d: GUILD_DELETE }
 	| { t: "GUILD_INTEGRATIONS_UPDATE", d: GUILD_INTEGRATIONS_UPDATE }
 	| { t: "GUILD_MEMBERS_CHUNK", d: GUILD_MEMBERS_CHUNK }
 	| { t: "GUILD_MEMBER_LIST_UPDATE", d: GUILD_MEMBER_LIST_UPDATE }
+	| { t: "GUILD_MEMBER_REMOVE", d: GUILD_MEMBER_REMOVE }
 	| { t: "GUILD_MEMBER_UPDATE", d: GUILD_MEMBER_UPDATE }
+	| { t: "GUILD_ROLE_DELETE", d: GUILD_ROLE_DELETE }
 	| { t: "GUILD_ROLE_UPDATE", d: GUILD_ROLE_UPDATE }
 	| { t: "GUILD_SCHEDULED_EVENT_USER_ADD", d: GUILD_SCHEDULED_EVENT_USER_ADD }
 	| { t: "GUILD_UPDATE", d: GUILD_UPDATE }
+	| { t: "INTEGRATION_DELETE", d: INTEGRATION_DELETE }
 	| { t: "INTEGRATION_UPDATE", d: INTEGRATION_UPDATE }
 	| { t: "MESSAGE_ACK", d: MESSAGE_ACK }
 	| { t: "MESSAGE_CREATE", d: MESSAGE_CREATE }
@@ -3034,6 +3142,7 @@ export type Events =
 	| { t: "PRESENCE_UPDATE", d: PRESENCE_UPDATE }
 	| { t: "READY", d: READY }
 	| { t: "READY_SUPPLEMENTAL", d: READY_SUPPLEMENTAL }
+	| { t: "RESUMED", d: RESUMED }
 	| { t: "SESSIONS_REPLACE", d: SESSIONS_REPLACE }
 	| { t: "STREAM_CREATE", d: STREAM_CREATE }
 	| { t: "STREAM_DELETE", d: STREAM_DELETE }
@@ -3048,6 +3157,7 @@ export type Events =
 	| { t: "USER_SETTINGS_PROTO_UPDATE", d: USER_SETTINGS_PROTO_UPDATE }
 	| { t: "VOICE_CHANNEL_STATUS_UPDATE", d: VOICE_CHANNEL_STATUS_UPDATE }
 	| { t: "VOICE_SERVER_UPDATE", d: VOICE_SERVER_UPDATE }
-	| { t: "VOICE_STATE_UPDATE", d: VOICE_STATE_UPDATE };
+	| { t: "VOICE_STATE_UPDATE", d: VOICE_STATE_UPDATE }
+	| { t: "WEBHOOKS_UPDATE", d: WEBHOOKS_UPDATE };
 
 export type Dispatch = { op: 0, s: number } & Events;
