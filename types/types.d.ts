@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/25/2024 @ 4:09:05 PM
+// 5/26/2024 @ 11:43:55 PM
 // By: @0x7030676e31
 
 export type CALL_CREATE = {
@@ -19,6 +19,10 @@ export type CALL_CREATE = {
 	region: string;
 	message_id: string;
 	embedded_activities: [];
+	channel_id: string;
+};
+
+export type CALL_DELETE = {
 	channel_id: string;
 };
 
@@ -79,19 +83,30 @@ export type CHANNEL_DELETE = {
 	last_pin_timestamp?: string;
 };
 
+export type CHANNEL_PINS_ACK = {
+	version: number;
+	timestamp: string;
+	channel_id: string;
+};
+
 export type CHANNEL_PINS_UPDATE = {
 	last_pin_timestamp: string;
 	channel_id: string;
-	guild_id: string;
+	guild_id?: string;
 };
 
 export type CHANNEL_STATUSES = {
 	guild_id: string;
-	channels: [];
+	channels: {
+		status: string;
+		id: string;
+	}[];
 };
 
 export type CHANNEL_UPDATE = {
-	voice_background_display?: null;
+	voice_background_display?: null | {
+		type: number;
+	};
 	version: number;
 	user_limit?: number;
 	type: number;
@@ -191,10 +206,14 @@ export type GUILD_AUDIT_LOG_ENTRY_CREATE = {
 	id: string;
 	action_type: number;
 	guild_id: string;
-	options: {
+	options?: {
 		count: string;
 		channel_id: string;
 	};
+	changes: {
+		new_value: string;
+		key: string;
+	}[];
 };
 
 export type GUILD_BAN_ADD = {
@@ -280,7 +299,7 @@ export type GUILD_CREATE = {
 	properties: {
 		features: string[];
 		clan: null;
-		splash: string;
+		splash: null | string;
 		nsfw: boolean;
 		max_stage_video_channel_users: number;
 		hub_type: null;
@@ -291,32 +310,32 @@ export type GUILD_CREATE = {
 			dm_spam_detected_at: null;
 		};
 		mfa_level: number;
-		safety_alerts_channel_id: string;
+		safety_alerts_channel_id: null | string;
 		id: string;
-		latest_onboarding_question_id: string;
+		latest_onboarding_question_id: null | string;
 		preferred_locale: string;
 		name: string;
 		premium_progress_bar_enabled: boolean;
 		verification_level: number;
-		vanity_url_code: string;
+		vanity_url_code: null | string;
 		max_video_channel_users: number;
-		system_channel_id: string;
+		system_channel_id: null | string;
 		application_id: null;
-		icon: string;
-		discovery_splash: string;
+		icon: null | string;
+		discovery_splash: null | string;
 		nsfw_level: number;
-		description: string;
+		description: null | string;
 		default_message_notifications: number;
-		afk_channel_id: string;
+		afk_channel_id: null | string;
 		premium_tier: number;
 		home_header: null | string;
 		explicit_content_filter: number;
 		max_members: number;
 		owner_id: string;
-		rules_channel_id: string;
+		rules_channel_id: null | string;
 		afk_timeout: number;
-		banner: string;
-		public_updates_channel_id: string;
+		banner: null | string;
+		public_updates_channel_id: null | string;
 		system_channel_flags: number;
 	};
 	presences: [];
@@ -396,7 +415,7 @@ export type GUILD_CREATE = {
 		channel_id: string;
 		auto_start: boolean;
 	}[];
-	guild_id: string;
+	guild_id?: string;
 	emojis: {
 		roles: [];
 		require_colons: boolean;
@@ -480,6 +499,8 @@ export type GUILD_CREATE = {
 		video_quality_mode?: number;
 	}[];
 	application_command_counts: {};
+	unavailable: boolean;
+	activity_instances: {};
 };
 
 export type GUILD_DELETE = {
@@ -1575,6 +1596,7 @@ export type MESSAGE_UPDATE = {
 		placeholder?: string;
 		height?: number;
 		content_type?: string;
+		flags?: number;
 	}[];
 	guild_id?: string;
 	type?: number;
@@ -1874,6 +1896,10 @@ export type MESSAGE_UPDATE = {
 		id: string;
 	};
 	application_id?: string;
+	call?: {
+		participants: string[];
+		ended_timestamp: string;
+	};
 };
 
 export type PASSIVE_UPDATE_V2 = {
@@ -2169,8 +2195,8 @@ export type READY = {
 		avatar: null;
 	}[][];
 	guilds: {
-		version: number;
-		threads: {
+		version?: number;
+		threads?: {
 			type: number;
 			total_message_sent: number;
 			thread_metadata: {
@@ -2201,7 +2227,7 @@ export type READY = {
 			applied_tags?: string[];
 			last_pin_timestamp?: string;
 		}[];
-		stickers: {
+		stickers?: {
 			type: number;
 			tags: string;
 			name: string;
@@ -2212,8 +2238,8 @@ export type READY = {
 			available: boolean;
 			asset?: string;
 		}[];
-		stage_instances: [];
-		roles: {
+		stage_instances?: [];
+		roles?: {
 			unicode_emoji: null | string;
 			tags: {
 				bot_id?: string;
@@ -2233,7 +2259,7 @@ export type READY = {
 			flags: number;
 			color: number;
 		}[];
-		properties: {
+		properties?: {
 			home_header: null | string;
 			explicit_content_filter: number;
 			safety_alerts_channel_id: null | string;
@@ -2275,13 +2301,13 @@ export type READY = {
 			preferred_locale: string;
 			system_channel_id: null | string;
 		};
-		premium_subscription_count: number;
-		member_count: number;
-		lazy: boolean;
-		large: boolean;
-		joined_at: string;
+		premium_subscription_count?: number;
+		member_count?: number;
+		lazy?: boolean;
+		large?: boolean;
+		joined_at?: string;
 		id: string;
-		guild_scheduled_events: {
+		guild_scheduled_events?: {
 			status: number;
 			sku_ids: [];
 			scheduled_start_time: string;
@@ -2318,7 +2344,7 @@ export type READY = {
 			channel_id: null | string;
 			auto_start: boolean;
 		}[];
-		emojis: {
+		emojis?: {
 			roles: string[];
 			require_colons: boolean;
 			name: string;
@@ -2327,8 +2353,8 @@ export type READY = {
 			available: boolean;
 			animated: boolean;
 		}[];
-		data_mode: string;
-		channels: {
+		data_mode?: string;
+		channels?: {
 			type: number;
 			topic?: null | string;
 			theme_color?: null | number;
@@ -2377,8 +2403,9 @@ export type READY = {
 			}[];
 			default_auto_archive_duration?: number;
 		}[];
-		application_command_counts: {};
+		application_command_counts?: {};
 		activity_instances?: {};
+		unavailable?: boolean;
 	}[];
 	guild_join_requests: [];
 	guild_experiments: (null | string | number | ((number | (number | (null | boolean | number | (null | string | number | string[])[] | {
@@ -2528,7 +2555,7 @@ export type READY_SUPPLEMENTAL = {
 	}[][];
 	lazy_private_channels: [];
 	guilds: {
-		voice_states: {
+		voice_states?: {
 			user_id: string;
 			suppress: boolean;
 			session_id: string;
@@ -2542,7 +2569,7 @@ export type READY_SUPPLEMENTAL = {
 			self_stream?: boolean;
 		}[];
 		id: string;
-		embedded_activities: {
+		embedded_activities?: {
 			users: string[];
 			update_code: number;
 			embedded_activity: {
@@ -3032,6 +3059,21 @@ export type USER_SETTINGS_PROTO_UPDATE = {
 	partial: boolean;
 };
 
+export type VOICE_CHANNEL_EFFECT_SEND = {
+	user_id: string;
+	sound_volume: number;
+	sound_id: number;
+	guild_id: null;
+	emoji: {
+		name: string;
+		id: null;
+		animated: boolean;
+	};
+	channel_id: string;
+	animation_type: string;
+	animation_id: number;
+};
+
 export type VOICE_CHANNEL_STATUS_UPDATE = {
 	status: null;
 	id: string;
@@ -3045,7 +3087,7 @@ export type VOICE_SERVER_UPDATE = {
 };
 
 export type VOICE_STATE_UPDATE = {
-	member: {
+	member?: {
 		user: {
 			username: string;
 			public_flags: number;
@@ -3090,7 +3132,7 @@ export type VOICE_STATE_UPDATE = {
 	self_deaf: boolean;
 	request_to_speak_timestamp: null;
 	mute: boolean;
-	guild_id: string;
+	guild_id: null | string;
 	deaf: boolean;
 	channel_id: null | string;
 	self_stream?: boolean;
@@ -3103,9 +3145,11 @@ export type WEBHOOKS_UPDATE = {
 
 export type Events =
 	| { t: "CALL_CREATE", d: CALL_CREATE }
+	| { t: "CALL_DELETE", d: CALL_DELETE }
 	| { t: "CALL_UPDATE", d: CALL_UPDATE }
 	| { t: "CHANNEL_CREATE", d: CHANNEL_CREATE }
 	| { t: "CHANNEL_DELETE", d: CHANNEL_DELETE }
+	| { t: "CHANNEL_PINS_ACK", d: CHANNEL_PINS_ACK }
 	| { t: "CHANNEL_PINS_UPDATE", d: CHANNEL_PINS_UPDATE }
 	| { t: "CHANNEL_STATUSES", d: CHANNEL_STATUSES }
 	| { t: "CHANNEL_UPDATE", d: CHANNEL_UPDATE }
@@ -3155,6 +3199,7 @@ export type Events =
 	| { t: "TYPING_START", d: TYPING_START }
 	| { t: "USER_CONNECTIONS_UPDATE", d: USER_CONNECTIONS_UPDATE }
 	| { t: "USER_SETTINGS_PROTO_UPDATE", d: USER_SETTINGS_PROTO_UPDATE }
+	| { t: "VOICE_CHANNEL_EFFECT_SEND", d: VOICE_CHANNEL_EFFECT_SEND }
 	| { t: "VOICE_CHANNEL_STATUS_UPDATE", d: VOICE_CHANNEL_STATUS_UPDATE }
 	| { t: "VOICE_SERVER_UPDATE", d: VOICE_SERVER_UPDATE }
 	| { t: "VOICE_STATE_UPDATE", d: VOICE_STATE_UPDATE }
