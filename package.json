@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "bun run ./src/serve.ts",
     "compile": "bun run ./src/compile.ts",
-    "build": "bun run ./src/commit.ts",
+    "commit": "bun run ./src/commit.ts",
     "watch": "bun build src/extension.ts src/overlay.ts --minify --outdir=dist --watch"
   },
   "devDependencies": {
