@@ -69,7 +69,7 @@ const css = `
   transition: background-color var(--custom-button-transition-duration) ease, color var(--custom-button-transition-duration) ease;
   cursor: pointer;
   color: var(--white-500);
-  background-color: var(--brand-experiment);
+  background-color: var(--brand-500);
   user-select: none;
   border-radius: 3px;
   font-size: 14px;
@@ -83,11 +83,11 @@ const css = `
 }
 
 #socketer-reload:hover {
-  background-color: var(--brand-experiment-560);
+  background-color: var(--brand-560);
 }
 
 #socketer-reload:active {
-  background-color: var(--brand-experiment-600);
+  background-color: var(--brand-600);
 }
 
 #socketer-divider {
