@@ -1,4 +1,4 @@
-console.debug("Background script loaded!!");
+console.debug("Background script loaded!! 2");
 const decoder = new TextDecoder("utf-8");
 const encoder = new TextEncoder();
 
@@ -10,13 +10,11 @@ function injectMainFrame(
   filter.write(encoder.encode(data));
   filter.close();
 
-  if (!data.includes("GATEWAY_ENDPOINT:")) {
-    return;
+  if (data.includes("GATEWAY_ENDPOINT:")) {
+    browser.tabs.executeScript(details.tabId, {
+      file: "dist/overlay.js"
+    });
   }
-
-  browser.tabs.executeScript(details.tabId, {
-    file: "dist/overlay.js"
-  });
 }
 
 let targetAsset: string | null = null;

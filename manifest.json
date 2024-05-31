@@ -9,12 +9,6 @@
     "webRequestBlocking",
     "storage"
   ],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["dist/overlay.js"]
-    }
-  ],
   "background": {
     "scripts": ["dist/extension.js"]
   }
