@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Socketer",
+  "version": "1.0",
+  "description": "A simple extension to map Discord websocket traffic to typescript definitions",
+  "permissions": [
+    "<all_urls>",
+    "webRequest",
+    "webRequestBlocking",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/overlay.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["dist/extension.js"]
+  }
+} 
