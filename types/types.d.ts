@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/31/2024 @ 9:14:31 PM
+// 5/31/2024 @ 9:21:26 PM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
@@ -2960,6 +2960,17 @@ export type STAGE_INSTANCE_CREATE = {
 	channel_id: string;
 };
 
+export type STAGE_INSTANCE_DELETE = {
+	topic: string;
+	privacy_level: number;
+	invite_code: null;
+	id: string;
+	guild_scheduled_event_id: null;
+	guild_id: string;
+	discoverable_disabled: boolean;
+	channel_id: string;
+};
+
 export type STAGE_INSTANCE_UPDATE = {
 	topic: string;
 	send_start_notification: boolean;
@@ -3628,6 +3639,7 @@ export type Events =
 	| { t: "SESSIONS_REPLACE", d: SESSIONS_REPLACE }
 	| { t: "SOUNDBOARD_SOUNDS", d: SOUNDBOARD_SOUNDS }
 	| { t: "STAGE_INSTANCE_CREATE", d: STAGE_INSTANCE_CREATE }
+	| { t: "STAGE_INSTANCE_DELETE", d: STAGE_INSTANCE_DELETE }
 	| { t: "STAGE_INSTANCE_UPDATE", d: STAGE_INSTANCE_UPDATE }
 	| { t: "STREAM_CREATE", d: STREAM_CREATE }
 	| { t: "STREAM_DELETE", d: STREAM_DELETE }
