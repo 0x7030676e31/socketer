@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/27/2024 @ 10:03:27 PM
+// 5/31/2024 @ 8:57:23 PM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
@@ -166,6 +166,10 @@ export type CHANNEL_UPDATE = {
 		emoji_name: null | string;
 		emoji_id: null | string;
 	}[];
+};
+
+export type CONTENT_INVENTORY_INBOX_STALE = {
+	refresh_after_ms: number;
 };
 
 export type CONVERSATION_SUMMARY_UPDATE = {
@@ -949,6 +953,9 @@ export type GUILD_ROLE_UPDATE = {
 		tags?: {
 			bot_id?: string;
 			premium_subscriber?: null;
+			integration_id?: string;
+			subscription_listing_id?: string;
+			available_for_purchase?: null;
 		};
 	};
 	guild_id: string;
@@ -1009,8 +1016,8 @@ export type GUILD_SCHEDULED_EVENT_UPDATE = {
 	status: number;
 	sku_ids: [];
 	scheduled_start_time: string;
-	scheduled_end_time: null;
-	recurrence_rule: {
+	scheduled_end_time: null | string;
+	recurrence_rule: null | {
 		start: string;
 		interval: number;
 		frequency: number;
@@ -1029,11 +1036,13 @@ export type GUILD_SCHEDULED_EVENT_UPDATE = {
 	guild_scheduled_event_exceptions: [];
 	guild_id: string;
 	entity_type: number;
-	entity_metadata: null;
-	entity_id: string;
+	entity_metadata: null | {
+		location: string;
+	};
+	entity_id: null | string;
 	description: string;
 	creator_id: string;
-	channel_id: string;
+	channel_id: null | string;
 	auto_start: boolean;
 };
 
@@ -1884,14 +1893,14 @@ export type MESSAGE_UPDATE = {
 			avatar: null | string;
 		};
 		attachments: {
-			width: number;
+			width?: number;
 			url: string;
 			size: number;
 			proxy_url: string;
-			placeholder_version: number;
-			placeholder: string;
+			placeholder_version?: number;
+			placeholder?: string;
 			id: string;
-			height: number;
+			height?: number;
 			filename: string;
 			content_type: string;
 			content_scan_version: number;
@@ -1919,6 +1928,10 @@ export type MESSAGE_UPDATE = {
 			deaf: boolean;
 			communication_disabled_until: null | string;
 			avatar: null | string;
+			avatar_decoration_data?: {
+				sku_id: string;
+				asset: string;
+			};
 		};
 		id: string;
 		global_name: null | string;
@@ -2168,10 +2181,10 @@ export type PASSIVE_UPDATE_V2 = {
 			display_name: null | string;
 			discriminator: string;
 			clan: null | {
-				tag: string;
-				identity_guild_id: string;
-				identity_enabled: boolean;
-				badge: string;
+				tag: null | string;
+				identity_guild_id: null | string;
+				identity_enabled: null | boolean;
+				badge: null | string;
 			};
 			bot: boolean;
 			avatar_decoration_data: null | {
@@ -2274,10 +2287,10 @@ export type READY = {
 		global_name: null | string;
 		discriminator: string;
 		clan: null | {
-			tag: string;
-			identity_guild_id: string;
-			identity_enabled: boolean;
-			badge: string;
+			tag: null | string;
+			identity_guild_id: null | string;
+			identity_enabled: null | boolean;
+			badge: null | string;
 		};
 		avatar_decoration_data: null | {
 			sku_id: string;
@@ -2720,7 +2733,7 @@ export type READY_SUPPLEMENTAL = {
 				details?: string;
 				assets?: {
 					large_text?: string;
-					large_image: string;
+					large_image?: string;
 					small_image?: string;
 					small_text?: string;
 				};
@@ -3510,6 +3523,7 @@ export type Events =
 	| { t: "CHANNEL_PINS_UPDATE", d: CHANNEL_PINS_UPDATE }
 	| { t: "CHANNEL_STATUSES", d: CHANNEL_STATUSES }
 	| { t: "CHANNEL_UPDATE", d: CHANNEL_UPDATE }
+	| { t: "CONTENT_INVENTORY_INBOX_STALE", d: CONTENT_INVENTORY_INBOX_STALE }
 	| { t: "CONVERSATION_SUMMARY_UPDATE", d: CONVERSATION_SUMMARY_UPDATE }
 	| { t: "EMBEDDED_ACTIVITY_UPDATE", d: EMBEDDED_ACTIVITY_UPDATE }
 	| { t: "GUILD_APPLICATION_COMMAND_INDEX_UPDATE", d: GUILD_APPLICATION_COMMAND_INDEX_UPDATE }
