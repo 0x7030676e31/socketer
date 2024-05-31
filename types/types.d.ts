@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/31/2024 @ 8:57:23 PM
+// 5/31/2024 @ 9:14:31 PM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
@@ -433,7 +433,7 @@ export type GUILD_CREATE = {
 		sku_ids: [];
 		scheduled_start_time: string;
 		scheduled_end_time: null;
-		recurrence_rule: {
+		recurrence_rule: null | {
 			start: string;
 			interval: number;
 			frequency: number;
@@ -455,7 +455,7 @@ export type GUILD_CREATE = {
 		entity_metadata: null | {
 			speaker_ids: [];
 		};
-		entity_id: string;
+		entity_id: null | string;
 		description: string;
 		creator_id: string;
 		channel_id: string;
@@ -547,7 +547,7 @@ export type GUILD_CREATE = {
 	application_command_counts: {};
 	unavailable?: boolean;
 	activity_instances?: {};
-	has_threads_subscription: boolean;
+	has_threads_subscription?: boolean;
 };
 
 export type GUILD_DELETE = {
@@ -2495,7 +2495,16 @@ export type READY = {
 			available: boolean;
 			asset?: string;
 		}[];
-		stage_instances?: [];
+		stage_instances?: {
+			topic: string;
+			privacy_level: number;
+			invite_code: null;
+			id: string;
+			guild_scheduled_event_id: null;
+			guild_id: string;
+			discoverable_disabled: boolean;
+			channel_id: string;
+		}[];
 		roles?: {
 			unicode_emoji: null | string;
 			tags: {
@@ -2940,6 +2949,30 @@ export type SOUNDBOARD_SOUNDS = {
 	guild_id: string;
 };
 
+export type STAGE_INSTANCE_CREATE = {
+	topic: string;
+	privacy_level: number;
+	invite_code: null;
+	id: string;
+	guild_scheduled_event_id: null;
+	guild_id: string;
+	discoverable_disabled: boolean;
+	channel_id: string;
+};
+
+export type STAGE_INSTANCE_UPDATE = {
+	topic: string;
+	send_start_notification: boolean;
+	privacy_level: number;
+	invite_code: null;
+	id: string;
+	host_id: string;
+	guild_scheduled_event_id: null;
+	guild_id: string;
+	discoverable_disabled: boolean;
+	channel_id: string;
+};
+
 export type STREAM_CREATE = {
 	viewer_ids: [];
 	stream_key: string;
@@ -3090,14 +3123,14 @@ export type THREAD_LIST_SYNC = {
 				avatar: null | string;
 			};
 			attachments: {
-				width: number;
+				width?: number;
 				url: string;
 				size: number;
 				proxy_url: string;
 				placeholder_version?: number;
 				placeholder?: string;
 				id: string;
-				height: number;
+				height?: number;
 				filename: string;
 				content_type: string;
 				content_scan_version: number;
@@ -3141,7 +3174,7 @@ export type THREAD_LIST_SYNC = {
 			video?: {
 				width: number;
 				url: string;
-				proxy_url: string;
+				proxy_url?: string;
 				placeholder_version: number;
 				placeholder: string;
 				height: number;
@@ -3157,7 +3190,7 @@ export type THREAD_LIST_SYNC = {
 				height: number;
 			};
 			provider?: {
-				url: string;
+				url?: string;
 				name: string;
 			};
 			content_scan_version: number;
@@ -3165,6 +3198,10 @@ export type THREAD_LIST_SYNC = {
 			description?: string;
 			color?: number;
 			reference_id?: string;
+			author?: {
+				url: string;
+				name: string;
+			};
 		}[];
 		edited_timestamp: null | string;
 		content: string;
@@ -3220,6 +3257,24 @@ export type THREAD_LIST_SYNC = {
 			communication_disabled_until: null | string;
 			avatar: null | string;
 			unusual_dm_activity_until?: string;
+		};
+		poll?: {
+			question: {
+				text: string;
+			};
+			layout_type: number;
+			expiry: string;
+			answers: {
+				poll_media: {
+					text: string;
+					emoji: {
+						name: string;
+						id: null;
+					};
+				};
+				answer_id: number;
+			}[];
+			allow_multiselect: boolean;
 		};
 	}[];
 	guild_id: string;
@@ -3572,6 +3627,8 @@ export type Events =
 	| { t: "RESUMED", d: RESUMED }
 	| { t: "SESSIONS_REPLACE", d: SESSIONS_REPLACE }
 	| { t: "SOUNDBOARD_SOUNDS", d: SOUNDBOARD_SOUNDS }
+	| { t: "STAGE_INSTANCE_CREATE", d: STAGE_INSTANCE_CREATE }
+	| { t: "STAGE_INSTANCE_UPDATE", d: STAGE_INSTANCE_UPDATE }
 	| { t: "STREAM_CREATE", d: STREAM_CREATE }
 	| { t: "STREAM_DELETE", d: STREAM_DELETE }
 	| { t: "STREAM_SERVER_UPDATE", d: STREAM_SERVER_UPDATE }
