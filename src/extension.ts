@@ -10,7 +10,7 @@ function injectMainFrame(
   filter.write(encoder.encode(data));
   filter.close();
 
-  if (!data.includes("window.GLOBAL_ENV =")) {
+  if (!data.includes("GATEWAY_ENDPOINT:")) {
     return;
   }
 
