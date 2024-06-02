@@ -1,4 +1,4 @@
-console.debug("Background script loaded!! 2");
+console.debug("Background script loaded!!");
 const decoder = new TextDecoder("utf-8");
 const encoder = new TextEncoder();
 

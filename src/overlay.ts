@@ -123,14 +123,7 @@ function divider() {
   return divider;
 }
 
-let initial = true;
 window.addEventListener("load", async () => {
-  if (!initial) {
-    return;
-  }
-  
-  initial = false;
-  
   const overlay = document.createElement("div");
   overlay.id = "socketer-overlay";
 

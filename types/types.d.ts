@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 5/31/2024 @ 9:21:26 PM
+// 6/2/2024 @ 3:16:06 PM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
@@ -25,6 +25,7 @@ export type CALL_CREATE = {
 		mute: boolean;
 		deaf: boolean;
 		channel_id: string;
+		self_stream?: boolean;
 	}[];
 	ringing: [];
 	region: string;
@@ -46,27 +47,41 @@ export type CALL_UPDATE = {
 };
 
 export type CHANNEL_CREATE = {
-	version: number;
+	version?: number;
 	type: number;
 	topic?: null | string;
 	rate_limit_per_user?: number;
-	position: number;
-	permission_overwrites: {
+	position?: number;
+	permission_overwrites?: {
 		type: number;
 		id: string;
 		deny: string;
 		allow: string;
 	}[];
-	parent_id: null | string;
+	parent_id?: null | string;
 	nsfw?: boolean;
-	name: string;
-	last_message_id?: null;
+	name?: string;
+	last_message_id?: null | string;
 	id: string;
-	guild_id: string;
+	guild_id?: string;
 	flags: number;
 	user_limit?: number;
 	rtc_region?: null;
 	bitrate?: number;
+	safety_warnings?: [];
+	recipients?: {
+		username: string;
+		public_flags: number;
+		id: string;
+		global_name: string;
+		discriminator: string;
+		clan: null;
+		avatar_decoration_data: null;
+		avatar: string;
+	}[];
+	is_spam?: boolean;
+	is_message_request_timestamp?: string;
+	is_message_request?: boolean;
 };
 
 export type CHANNEL_DELETE = {
@@ -155,8 +170,8 @@ export type CHANNEL_UPDATE = {
 	template?: string;
 	default_sort_order?: null | number;
 	default_reaction_emoji?: null | {
-		emoji_name: null;
-		emoji_id: string;
+		emoji_name: null | string;
+		emoji_id: null | string;
 	};
 	default_forum_layout?: number;
 	available_tags?: {
@@ -166,6 +181,7 @@ export type CHANNEL_UPDATE = {
 		emoji_name: null | string;
 		emoji_id: null | string;
 	}[];
+	video_quality_mode?: number;
 };
 
 export type CONTENT_INVENTORY_INBOX_STALE = {
@@ -868,14 +884,14 @@ export type GUILD_MEMBER_LIST_UPDATE = {
 
 export type GUILD_MEMBER_REMOVE = {
 	user: {
-		username: string;
-		public_flags: number;
+		username?: string;
+		public_flags?: number;
 		id: string;
-		global_name: string;
-		discriminator: string;
-		clan: null;
-		avatar_decoration_data: null;
-		avatar: string;
+		global_name?: string;
+		discriminator?: string;
+		clan?: null;
+		avatar_decoration_data?: null;
+		avatar?: string;
 	};
 	guild_id: string;
 };
@@ -992,7 +1008,7 @@ export type GUILD_SCHEDULED_EVENT_DELETE = {
 	recurrence_rule: null;
 	privacy_level: number;
 	name: string;
-	image: null;
+	image: null | string;
 	id: string;
 	guild_scheduled_event_exceptions: [];
 	guild_id: string;
@@ -1054,6 +1070,42 @@ export type GUILD_SCHEDULED_EVENT_USER_ADD = {
 	guild_scheduled_event_exception_id?: string;
 };
 
+export type GUILD_SOUNDBOARD_SOUNDS_UPDATE = {
+	soundboard_sounds: {
+		volume: number;
+		user_id: string;
+		sound_id: string;
+		name: string;
+		id: string;
+		emoji_name: null | string;
+		emoji_id: null | string;
+		available: boolean;
+	}[];
+	guild_id: string;
+};
+
+export type GUILD_SOUNDBOARD_SOUND_CREATE = {
+	volume: number;
+	user_id: string;
+	user: {
+		username: string;
+		public_flags: number;
+		id: string;
+		global_name: string;
+		discriminator: string;
+		clan: null;
+		avatar_decoration_data: null;
+		avatar: string;
+	};
+	sound_id: string;
+	name: string;
+	id: string;
+	emoji_name: null;
+	emoji_id: null;
+	available: boolean;
+	guild_id: string;
+};
+
 export type GUILD_UPDATE = {
 	id: string;
 	verification_level: number;
@@ -1103,6 +1155,7 @@ export type GUILD_UPDATE = {
 		tags?: {
 			bot_id?: string;
 			premium_subscriber?: null;
+			integration_id?: string;
 		};
 	}[];
 	owner_id: string;
@@ -1409,10 +1462,10 @@ export type MESSAGE_CREATE = {
 			global_name: null | string;
 			discriminator: string;
 			clan: null | {
-				tag: string;
-				identity_guild_id: string;
+				tag: null | string;
+				identity_guild_id: null | string;
 				identity_enabled: boolean;
-				badge: string;
+				badge: null | string;
 			};
 			avatar_decoration_data: null | {
 				sku_id: string;
@@ -1490,6 +1543,9 @@ export type MESSAGE_CREATE = {
 				style: number;
 				label: string;
 				id: string;
+				emoji: {
+					name: string;
+				};
 			}[];
 		}[];
 		channel_id: string;
@@ -1624,7 +1680,7 @@ export type MESSAGE_CREATE = {
 			username: string;
 			public_flags: number;
 			id: string;
-			global_name: string;
+			global_name: null | string;
 			discriminator: string;
 			clan: null;
 			avatar_decoration_data: null | {
@@ -1645,7 +1701,7 @@ export type MESSAGE_CREATE = {
 			flags: number;
 			deaf: boolean;
 			communication_disabled_until: null | string;
-			avatar: null;
+			avatar: null | string;
 		};
 		id: string;
 	};
@@ -1784,11 +1840,24 @@ export type MESSAGE_REACTION_REMOVE = {
 	channel_id: string;
 	burst: boolean;
 	guild_id: string;
+	burst_colors?: [];
 };
 
 export type MESSAGE_REACTION_REMOVE_ALL = {
 	message_id: string;
 	channel_id: string;
+	guild_id: string;
+};
+
+export type MESSAGE_REACTION_REMOVE_EMOJI = {
+	type: number;
+	message_id: string;
+	emoji: {
+		name: string;
+		id: null;
+	};
+	channel_id: string;
+	burst: boolean;
 	guild_id: string;
 };
 
@@ -1877,7 +1946,20 @@ export type MESSAGE_UPDATE = {
 		}[];
 		edited_timestamp: null | string;
 		content: string;
-		components: [];
+		components: {
+			type: number;
+			id: string;
+			components: {
+				url: string;
+				type: number;
+				style: number;
+				label: string;
+				id: string;
+				emoji: {
+					name: string;
+				};
+			}[];
+		}[];
 		channel_id: string;
 		author: {
 			username: string;
@@ -1891,6 +1973,7 @@ export type MESSAGE_UPDATE = {
 				asset: string;
 			};
 			avatar: null | string;
+			bot?: boolean;
 		};
 		attachments: {
 			width?: number;
@@ -1932,18 +2015,25 @@ export type MESSAGE_UPDATE = {
 				sku_id: string;
 				asset: string;
 			};
+			unusual_dm_activity_until?: string;
 		};
 		id: string;
 		global_name: null | string;
 		discriminator: string;
-		clan: null;
+		clan: null | {
+			tag: string;
+			identity_guild_id: string;
+			identity_enabled: boolean;
+			badge: string;
+		};
 		avatar_decoration_data: null | {
 			sku_id: string;
 			asset: string;
 		};
 		avatar: null | string;
+		bot?: boolean;
 	}[];
-	mention_roles?: [];
+	mention_roles?: string[];
 	mention_everyone?: boolean;
 	member?: {
 		roles: string[];
@@ -2069,7 +2159,7 @@ export type MESSAGE_UPDATE = {
 			username: string;
 			public_flags: number;
 			id: string;
-			global_name: string;
+			global_name: null | string;
 			discriminator: string;
 			clan: null;
 			avatar_decoration_data: null | {
@@ -2085,13 +2175,14 @@ export type MESSAGE_UPDATE = {
 			0: string;
 		};
 		interacted_message_id?: string;
+		original_response_message_id?: string;
 	};
 	interaction?: {
 		user: {
 			username: string;
 			public_flags: number;
 			id: string;
-			global_name: string;
+			global_name: null | string;
 			discriminator: string;
 			clan: null;
 			avatar_decoration_data: null | {
@@ -2112,7 +2203,7 @@ export type MESSAGE_UPDATE = {
 			flags: number;
 			deaf: boolean;
 			communication_disabled_until: null | string;
-			avatar: null;
+			avatar: null | string;
 		};
 		id: string;
 	};
@@ -2500,7 +2591,7 @@ export type READY = {
 			privacy_level: number;
 			invite_code: null;
 			id: string;
-			guild_scheduled_event_id: null;
+			guild_scheduled_event_id: null | string;
 			guild_id: string;
 			discoverable_disabled: boolean;
 			channel_id: string;
@@ -2732,6 +2823,8 @@ export type READY_SUPPLEMENTAL = {
 				id: string;
 				emoji?: {
 					name: string;
+					id?: string;
+					animated?: boolean;
 				};
 				created_at: number;
 				timestamps?: {
@@ -2751,9 +2844,12 @@ export type READY_SUPPLEMENTAL = {
 				buttons?: string[];
 				sync_id?: string;
 				party?: {
-					id: string;
+					id?: string;
+					size?: number[];
 				};
 				flags?: number;
+				platform?: string;
+				supported_platforms?: string[];
 			}[];
 		}[][];
 		friends: {
@@ -2954,7 +3050,7 @@ export type STAGE_INSTANCE_CREATE = {
 	privacy_level: number;
 	invite_code: null;
 	id: string;
-	guild_scheduled_event_id: null;
+	guild_scheduled_event_id: null | string;
 	guild_id: string;
 	discoverable_disabled: boolean;
 	channel_id: string;
@@ -2965,7 +3061,7 @@ export type STAGE_INSTANCE_DELETE = {
 	privacy_level: number;
 	invite_code: null;
 	id: string;
-	guild_scheduled_event_id: null;
+	guild_scheduled_event_id: null | string;
 	guild_id: string;
 	discoverable_disabled: boolean;
 	channel_id: string;
@@ -3090,7 +3186,7 @@ export type THREAD_LIST_SYNC = {
 				username: string;
 				public_flags: number;
 				id: string;
-				global_name: string;
+				global_name: null | string;
 				discriminator: string;
 				clan: null;
 				avatar_decoration_data: null | {
@@ -3098,6 +3194,7 @@ export type THREAD_LIST_SYNC = {
 					asset: string;
 				};
 				avatar: null | string;
+				bot?: boolean;
 			}[];
 			mention_roles: [];
 			mention_everyone: boolean;
@@ -3132,6 +3229,7 @@ export type THREAD_LIST_SYNC = {
 					asset: string;
 				};
 				avatar: null | string;
+				bot?: boolean;
 			};
 			attachments: {
 				width?: number;
@@ -3144,7 +3242,12 @@ export type THREAD_LIST_SYNC = {
 				height?: number;
 				filename: string;
 				content_type: string;
-				content_scan_version: number;
+				content_scan_version?: number;
+			}[];
+			sticker_items?: {
+				name: string;
+				id: string;
+				format_type: number;
 			}[];
 		};
 		position: number;
@@ -3175,6 +3278,7 @@ export type THREAD_LIST_SYNC = {
 				avatar: null | string;
 				unusual_dm_activity_until?: string;
 			};
+			bot?: boolean;
 		}[];
 		mention_roles: [];
 		mention_everyone: boolean;
@@ -3190,7 +3294,7 @@ export type THREAD_LIST_SYNC = {
 				placeholder: string;
 				height: number;
 			};
-			url: string;
+			url?: string;
 			type: string;
 			thumbnail?: {
 				width: number;
@@ -3216,7 +3320,15 @@ export type THREAD_LIST_SYNC = {
 		}[];
 		edited_timestamp: null | string;
 		content: string;
-		components: [];
+		components: {
+			type: number;
+			components: {
+				url: string;
+				type: number;
+				style: number;
+				label: string;
+			}[];
+		}[];
 		channel_id: string;
 		author: {
 			username: string;
@@ -3231,6 +3343,7 @@ export type THREAD_LIST_SYNC = {
 			};
 			avatar: null | string;
 			premium_type?: number;
+			bot?: boolean;
 		};
 		attachments: {
 			width?: number;
@@ -3244,6 +3357,7 @@ export type THREAD_LIST_SYNC = {
 			filename: string;
 			content_type: string;
 			content_scan_version: number;
+			flags?: number;
 		}[];
 		message_reference?: {
 			type?: number;
@@ -3294,34 +3408,47 @@ export type THREAD_LIST_SYNC = {
 export type THREAD_MEMBERS_UPDATE = {
 	member_count: number;
 	id: string;
-	added_members: {
+	added_members?: {
 		user_id: string;
 		presence: {
 			user: {
 				username: string;
 				public_flags?: number;
 				id: string;
-				global_name: string;
+				global_name: null | string;
 				discriminator: string;
 				clan: null;
-				avatar_decoration_data: null;
+				avatar_decoration_data?: null;
 				avatar: string;
+				bot: boolean;
 			};
 			status: string;
-			game: null;
+			game: null | {
+				type: number;
+				session_id: null;
+				name: string;
+				id: string;
+				created_at: number;
+			};
 			client_status: {
 				desktop?: string;
+				web: string;
 			};
 			broadcast: null;
-			activities: [];
+			activities: {
+				type: number;
+				name: string;
+				id: string;
+				created_at: number;
+			}[];
 		};
 		member: {
 			user: {
 				username: string;
 				public_flags: number;
 				id: string;
-				global_name: string;
-				display_name: string;
+				global_name: null | string;
+				display_name: null | string;
 				discriminator: string;
 				clan: null;
 				bot: boolean;
@@ -3344,6 +3471,8 @@ export type THREAD_MEMBERS_UPDATE = {
 		flags: number;
 	}[];
 	guild_id: string;
+	removed_member_ids?: string[];
+	member_ids_preview: string[];
 };
 
 export type THREAD_UPDATE = {
@@ -3509,7 +3638,7 @@ export type VOICE_CHANNEL_EFFECT_SEND = {
 };
 
 export type VOICE_CHANNEL_STATUS_UPDATE = {
-	status: null;
+	status: null | string;
 	id: string;
 	guild_id: string;
 };
@@ -3613,6 +3742,8 @@ export type Events =
 	| { t: "GUILD_SCHEDULED_EVENT_EXCEPTIONS_DELETE", d: GUILD_SCHEDULED_EVENT_EXCEPTIONS_DELETE }
 	| { t: "GUILD_SCHEDULED_EVENT_UPDATE", d: GUILD_SCHEDULED_EVENT_UPDATE }
 	| { t: "GUILD_SCHEDULED_EVENT_USER_ADD", d: GUILD_SCHEDULED_EVENT_USER_ADD }
+	| { t: "GUILD_SOUNDBOARD_SOUNDS_UPDATE", d: GUILD_SOUNDBOARD_SOUNDS_UPDATE }
+	| { t: "GUILD_SOUNDBOARD_SOUND_CREATE", d: GUILD_SOUNDBOARD_SOUND_CREATE }
 	| { t: "GUILD_UPDATE", d: GUILD_UPDATE }
 	| { t: "INTEGRATION_DELETE", d: INTEGRATION_DELETE }
 	| { t: "INTEGRATION_UPDATE", d: INTEGRATION_UPDATE }
@@ -3626,6 +3757,7 @@ export type Events =
 	| { t: "MESSAGE_REACTION_ADD_MANY", d: MESSAGE_REACTION_ADD_MANY }
 	| { t: "MESSAGE_REACTION_REMOVE", d: MESSAGE_REACTION_REMOVE }
 	| { t: "MESSAGE_REACTION_REMOVE_ALL", d: MESSAGE_REACTION_REMOVE_ALL }
+	| { t: "MESSAGE_REACTION_REMOVE_EMOJI", d: MESSAGE_REACTION_REMOVE_EMOJI }
 	| { t: "MESSAGE_UPDATE", d: MESSAGE_UPDATE }
 	| { t: "NOTIFICATION_CENTER_ITEM_CREATE", d: NOTIFICATION_CENTER_ITEM_CREATE }
 	| { t: "PASSIVE_UPDATE_V2", d: PASSIVE_UPDATE_V2 }
