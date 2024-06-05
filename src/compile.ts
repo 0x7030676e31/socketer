@@ -61,7 +61,8 @@ class Compiler {
     if (type.obj !== null) {
       const lines = [];
       for (const key of Object.keys(type.obj)) {
-        lines.push(`${IDENT_SYMBOL.repeat(depth)}${key}${type.obj[key].types & 1 ? "?" : ""}: ${this.inspect(type.obj[key], depth + 1)};`);
+        const fmtKey = key === "[key: number]" && type.obj[key].types & 1 ? "[key?: number]" : key;
+        lines.push(`${IDENT_SYMBOL.repeat(depth)}${fmtKey}${key !== "[key: number]" && type.obj[key].types & 1 ? "?" : ""}: ${this.inspect(type.obj[key], depth + 1)};`);
       }
       
       types.push(lines.length ? `{\n${lines.join("\n")}\n${IDENT_SYMBOL.repeat(depth - 1)}}` : "{}");

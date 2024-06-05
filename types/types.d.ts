@@ -1,27 +1,17 @@
 // See: https://github.com/0x7030676e31/socketer
-// 6/4/2024 @ 11:44:50 PM
+// 6/5/2024 @ 5:05:15 PM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
 	user: {
-		594572033069809667?: {
-			volume: number;
-			soundboard_muted: boolean;
-			muted: boolean;
-		};
-		743755179056168990?: {
-			volume: number;
-			soundboard_muted: boolean;
-			muted: boolean;
-		};
-		313380706610970624: {
+		[key?: number]: {
 			volume: number;
 			soundboard_muted: boolean;
 			muted: boolean;
 		};
 	};
 	stream: {
-		705474770136858694?: {
+		[key?: number]: {
 			volume: number;
 			soundboard_muted: boolean;
 			muted: boolean;
@@ -1575,7 +1565,7 @@ export type MESSAGE_CREATE = {
 		interacted_message_id?: string;
 		id: string;
 		authorizing_integration_owners: {
-			0: string;
+			[key: number]: string;
 		};
 		name?: string;
 		original_response_message_id?: string;
@@ -1764,7 +1754,7 @@ export type MESSAGE_CREATE = {
 			interacted_message_id?: string;
 			id: string;
 			authorizing_integration_owners: {
-				0: string;
+				[key: number]: string;
 			};
 			name?: string;
 		};
@@ -2337,7 +2327,7 @@ export type MESSAGE_UPDATE = {
 		name?: string;
 		id: string;
 		authorizing_integration_owners: {
-			0: string;
+			[key: number]: string;
 		};
 		interacted_message_id?: string;
 		original_response_message_id?: string;

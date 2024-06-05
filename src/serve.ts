@@ -28,12 +28,13 @@ class Server {
 
   public async load() {
     const file = Bun.file(PATH);
-    if (!file.exists()) {
+    const exists = await file.exists();
+    if (!exists) {
       Bun.write(PATH, "{}");
     }
 
-    this.types = await file.exists() ? await this.read(file) : {};
-    this.hash = BigInt(Bun.hash(await file.arrayBuffer()));
+    this.types = exists ? await this.read(file) : {};
+    this.hash = exists ? BigInt(Bun.hash(await file.arrayBuffer())) : 0n;
     setInterval(async () => await this.write(), WRITE_INTERVAL);
   }
 
@@ -135,17 +136,20 @@ class Server {
     const defined = Object.entries(target.obj ?? {}).filter(([_, value]) => !(value.types & 1)).map(([key]) => key);
 
     for (const [key, value] of Object.entries(source)) {
-      target.obj[key] ??= { types: 0, arr: null, obj: null };
-      this.analyze(value, target.obj[key]);
+      const fmtKey = /^\d+$/.test(key) ? "[key: number]" : key;
 
-      const idx = defined.indexOf(key);
+      target.obj[fmtKey] ??= { types: 0, arr: null, obj: null };
+      this.analyze(value, target.obj[fmtKey]);
+
+      const idx = defined.indexOf(fmtKey);
       if (idx !== -1) {
         defined.splice(idx, 1);
       }
     }
 
     for (const key of defined) {
-      target.obj[key].types |= 1;
+      const fmtKey = /^\d+$/.test(key) ? "[key: number]" : key;
+      target.obj[fmtKey].types |= 1;
     }
   }
 
