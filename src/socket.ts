@@ -1,7 +1,28 @@
-import identify from "../payload.json" assert { type: "json" };
+import identify from "../identify.json" assert { type: "json" };
 import { EventEmitter } from "node:events";
+import type { Events } from "../types/types";
 
-export default class Socket extends EventEmitter {
+type EventsMap<T = Events> = T extends { t: infer U, d: infer V }
+  ? { event: U, payload: V }
+  : never;
+
+interface SocketEvents {
+  "open": () => void;
+  "close": (wasClean: boolean, code: number, reason: string) => void;
+  "dispatch": ({ event, payload }: EventsMap) => void;
+  "resume": () => void;
+}
+
+interface Socket extends EventEmitter {
+  on<T extends keyof SocketEvents>(event: T, listener: SocketEvents[T]): this;
+  once<T extends keyof SocketEvents>(event: T, listener: SocketEvents[T]): this;
+  off<T extends keyof SocketEvents>(event: T, listener: SocketEvents[T]): this;
+  emit<T extends keyof SocketEvents>(event: T, ...args: Parameters<SocketEvents[T]>): boolean;
+  removeListener<T extends keyof SocketEvents>(event: T, listener: SocketEvents[T]): this;
+  removeAllListeners(event?: keyof SocketEvents): this;
+}
+
+class Socket extends EventEmitter {
   public static readonly GATEWAY_URL = "wss://gateway.discord.gg";
   public static readonly GATEWAY_VERSION = 9;
   public static readonly GATEWAY_ENCODING = "json";
@@ -95,10 +116,10 @@ export default class Socket extends EventEmitter {
   }
 
   private onMessage(event: MessageEvent) {
-    const data = JSON.parse(event.data);
+    const data = JSON.parse(event.data); 
     switch (data.op) {
       case 0:
-        this.handleDispatch(data.d, data.t);
+        this.handleDispatch(data);
         this.sequence = data.s;
         break;
 
@@ -129,13 +150,13 @@ export default class Socket extends EventEmitter {
     }
   }
 
-  private handleDispatch(payload: any, event: string) {
+  private handleDispatch({ t: event, d: payload }: Events) {
     if (event === "READY") {
       this.sessionId = payload.session_id;
       this.reconnectUrl = payload.resume_gateway_url;
     }
 
-    this.emit("dispatch", payload, event);
+    this.emit("dispatch", { event, payload } as EventsMap);
   }
 
   private heartbeat() {
@@ -157,3 +178,5 @@ export default class Socket extends EventEmitter {
     this.connect();
   }
 }
+
+export default Socket;
