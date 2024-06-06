@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 6/5/2024 @ 5:05:15 PM
+// 6/6/2024 @ 2:06:10 AM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
@@ -272,17 +272,28 @@ export type GUILD_AUDIT_LOG_ENTRY_CREATE = {
 	guild_id: string;
 	options?: {
 		count?: string;
-		channel_id: string;
-		auto_moderation_rule_trigger_type: string;
-		auto_moderation_rule_name: string;
+		channel_id?: string;
+		auto_moderation_rule_trigger_type?: string;
+		auto_moderation_rule_name?: string;
+		type?: string;
+		role_name?: string;
+		id?: string;
 	};
 	changes?: {
 		new_value?: boolean | string | number | {
-			name: string;
+			name?: string;
 			id: string;
+			type?: number;
+			deny?: string;
+			allow?: string;
 		}[];
 		key: string;
-		old_value?: boolean | string | number | [] | {
+		old_value?: boolean | string | number | {
+			type: number;
+			id: string;
+			deny: string;
+			allow: string;
+		}[] | {
 			name: string;
 			id: null;
 		};
@@ -699,7 +710,8 @@ export type GUILD_MEMBERS_CHUNK = {
 		status: string;
 		client_status: {
 			web?: string;
-			desktop: string;
+			desktop?: string;
+			mobile?: string;
 		};
 		broadcast: null;
 		activities: {
@@ -711,9 +723,19 @@ export type GUILD_MEMBERS_CHUNK = {
 				start: number;
 			};
 			application_id?: string;
-			emoji: {
+			emoji?: {
 				name: string;
 			};
+			state?: string;
+			session_id?: string;
+			details?: string;
+			buttons?: string[];
+			assets?: {
+				small_image: string;
+				large_text: string;
+				large_image: string;
+			};
+			url?: string;
 		}[];
 	}[];
 };
@@ -1345,6 +1367,9 @@ export type MESSAGE_ACK = {
 	last_viewed?: null | number;
 	flags?: null | number;
 	channel_id: string;
+	mention_count?: number;
+	manual?: boolean;
+	ack_type?: number;
 };
 
 export type MESSAGE_CREATE = {
@@ -1726,12 +1751,20 @@ export type MESSAGE_CREATE = {
 					text: string;
 					emoji?: {
 						name: string;
-						id: string;
+						id: null | string;
 					};
 				};
 				answer_id: number;
 			}[];
 			allow_multiselect: boolean;
+			results?: {
+				is_finalized: boolean;
+				answer_counts: {
+					me_voted: boolean;
+					id: number;
+					count: number;
+				}[];
+			};
 		};
 		sticker_items?: {
 			name: string;
@@ -1748,7 +1781,7 @@ export type MESSAGE_CREATE = {
 				discriminator: string;
 				clan: null;
 				avatar_decoration_data: null;
-				avatar: string;
+				avatar: null | string;
 			};
 			type: number;
 			interacted_message_id?: string;
@@ -1768,7 +1801,7 @@ export type MESSAGE_CREATE = {
 				discriminator: string;
 				clan: null;
 				avatar_decoration_data: null;
-				avatar: string;
+				avatar: null | string;
 			};
 			type: number;
 			name: string;
@@ -2077,6 +2110,12 @@ export type MESSAGE_UPDATE = {
 				name: string;
 			};
 			reference_id?: string;
+			timestamp: string;
+			footer: {
+				text: string;
+				proxy_icon_url: string;
+				icon_url: string;
+			};
 		}[];
 		edited_timestamp: null | string;
 		content: string;
@@ -2132,6 +2171,20 @@ export type MESSAGE_UPDATE = {
 			id: string;
 			format_type: number;
 		}[];
+		poll?: {
+			question: {
+				text: string;
+			};
+			layout_type: number;
+			expiry: string;
+			answers: {
+				poll_media: {
+					text: string;
+				};
+				answer_id: number;
+			}[];
+			allow_multiselect: boolean;
+		};
 	};
 	position?: number;
 	pinned?: boolean;
@@ -3942,7 +3995,7 @@ export type USER_GUILD_SETTINGS_UPDATE = {
 	mute_scheduled_events: boolean;
 	mute_config: null | {
 		selected_time_window: number;
-		end_time: null;
+		end_time: null | string;
 	};
 	mobile_push: boolean;
 	message_notifications: number;
