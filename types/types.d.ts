@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 6/6/2024 @ 2:06:10 AM
+// 6/7/2024 @ 5:10:08 PM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
@@ -1031,6 +1031,9 @@ export type GUILD_ROLE_CREATE = {
 		flags: number;
 		description: null;
 		color: number;
+		tags: {
+			bot_id: string;
+		};
 	};
 	guild_id: string;
 };
@@ -1143,7 +1146,8 @@ export type GUILD_SCHEDULED_EVENT_UPDATE = {
 	guild_id: string;
 	entity_type: number;
 	entity_metadata: null | {
-		location: string;
+		location?: string;
+		speaker_ids?: [];
 	};
 	entity_id: null | string;
 	description: string;
@@ -2019,7 +2023,7 @@ export type MESSAGE_REACTION_REMOVE_EMOJI = {
 	message_id: string;
 	emoji: {
 		name: string;
-		id: null;
+		id: null | string;
 	};
 	channel_id: string;
 	burst: boolean;
@@ -2082,20 +2086,20 @@ export type MESSAGE_UPDATE = {
 			video?: {
 				width: number;
 				url: string;
-				placeholder_version: number;
-				placeholder: string;
+				placeholder_version?: number;
+				placeholder?: string;
 				height: number;
 				proxy_url?: string;
 			};
-			url: string;
+			url?: string;
 			type: string;
 			title?: string;
 			thumbnail?: {
 				width: number;
 				url: string;
 				proxy_url: string;
-				placeholder_version: number;
-				placeholder: string;
+				placeholder_version?: number;
+				placeholder?: string;
 				height: number;
 			};
 			provider?: {
@@ -2103,15 +2107,15 @@ export type MESSAGE_UPDATE = {
 				name: string;
 			};
 			description?: string;
-			content_scan_version: number;
+			content_scan_version?: number;
 			color?: number;
 			author?: {
 				url: string;
 				name: string;
 			};
 			reference_id?: string;
-			timestamp: string;
-			footer: {
+			timestamp?: string;
+			footer?: {
 				text: string;
 				proxy_icon_url: string;
 				icon_url: string;
@@ -2136,17 +2140,17 @@ export type MESSAGE_UPDATE = {
 		channel_id: string;
 		author: {
 			username: string;
-			public_flags: number;
+			public_flags?: number;
 			id: string;
 			global_name: null | string;
 			discriminator: string;
-			clan: null | {
-				tag: null;
-				identity_guild_id: null;
+			clan?: null | {
+				tag: null | string;
+				identity_guild_id: null | string;
 				identity_enabled: boolean;
-				badge: null;
+				badge: null | string;
 			};
-			avatar_decoration_data: null | {
+			avatar_decoration_data?: null | {
 				sku_id: string;
 				asset: string;
 			};
@@ -2165,6 +2169,7 @@ export type MESSAGE_UPDATE = {
 			filename: string;
 			content_type: string;
 			content_scan_version?: number;
+			flags: number;
 		}[];
 		sticker_items?: {
 			name: string;
@@ -2185,6 +2190,7 @@ export type MESSAGE_UPDATE = {
 			}[];
 			allow_multiselect: boolean;
 		};
+		webhook_id?: string;
 	};
 	position?: number;
 	pinned?: boolean;
@@ -2303,6 +2309,7 @@ export type MESSAGE_UPDATE = {
 			height: number;
 		};
 		reference_id?: string;
+		flags?: number;
 	}[];
 	edited_timestamp?: null | string;
 	content?: string;
@@ -2630,6 +2637,7 @@ export type READY = {
 		avatar: null | string;
 		display_name?: null | string;
 		bot?: boolean;
+		system?: boolean;
 	}[];
 	user_settings_proto: string;
 	user_guild_settings: {
@@ -2702,7 +2710,7 @@ export type READY = {
 		};
 		activities: {
 			type: number;
-			state: string;
+			state?: string;
 			name: string;
 			id: string;
 			created_at: number;
@@ -2712,6 +2720,8 @@ export type READY = {
 			};
 			emoji?: {
 				name: string;
+				id: string;
+				animated: boolean;
 			};
 			sync_id?: string;
 			session_id?: string;
@@ -3256,6 +3266,8 @@ export type SESSIONS_REPLACE = {
 		};
 		emoji?: {
 			name: string;
+			id: string;
+			animated: boolean;
 		};
 		sync_id?: string;
 		session_id?: string;
@@ -3310,12 +3322,12 @@ export type STAGE_INSTANCE_DELETE = {
 
 export type STAGE_INSTANCE_UPDATE = {
 	topic: string;
-	send_start_notification: boolean;
+	send_start_notification?: boolean;
 	privacy_level: number;
 	invite_code: null;
 	id: string;
-	host_id: string;
-	guild_scheduled_event_id: null;
+	host_id?: string;
+	guild_scheduled_event_id: null | string;
 	guild_id: string;
 	discoverable_disabled: boolean;
 	channel_id: string;
@@ -3358,6 +3370,7 @@ export type THREAD_CREATE = {
 		auto_archive_duration: number;
 		archived: boolean;
 		archive_timestamp: string;
+		invitable?: boolean;
 	};
 	rate_limit_per_user: number;
 	parent_id: string;
