@@ -1,5 +1,5 @@
 // See: https://github.com/0x7030676e31/socketer
-// 6/7/2024 @ 5:10:08 PM
+// 6/7/2024 @ 10:48:13 PM
 // By: @0x7030676e31
 
 export type AUDIO_SETTINGS_UPDATE = {
@@ -72,7 +72,7 @@ export type CHANNEL_CREATE = {
 	}[];
 	parent_id?: null | string;
 	nsfw?: boolean;
-	name?: string;
+	name?: null | string;
 	last_message_id?: null | string;
 	id: string;
 	guild_id?: string;
@@ -90,31 +90,34 @@ export type CHANNEL_CREATE = {
 		clan: null;
 		avatar_decoration_data: null;
 		avatar: string;
-		bot: boolean;
+		bot?: boolean;
 	}[];
 	is_spam?: boolean;
 	is_message_request_timestamp?: string;
 	is_message_request?: boolean;
+	owner_id?: string;
+	origin_channel_id?: string;
+	icon?: null;
 };
 
 export type CHANNEL_DELETE = {
-	version: number;
+	version?: number;
 	type: number;
 	topic?: null | string;
 	rate_limit_per_user?: number;
-	position: number;
-	permission_overwrites: {
+	position?: number;
+	permission_overwrites?: {
 		type: number;
 		id: string;
 		deny: string;
 		allow: string;
 	}[];
-	parent_id: null | string;
+	parent_id?: null | string;
 	nsfw?: boolean;
-	name: string;
+	name: null | string;
 	last_message_id?: null | string;
 	id: string;
-	guild_id: string;
+	guild_id?: string;
 	flags: number;
 	user_limit?: number;
 	rtc_region?: null;
@@ -125,6 +128,8 @@ export type CHANNEL_DELETE = {
 		name: string;
 		id: null;
 	};
+	owner_id?: string;
+	icon?: null;
 };
 
 export type CHANNEL_PINS_ACK = {
@@ -137,6 +142,20 @@ export type CHANNEL_PINS_UPDATE = {
 	last_pin_timestamp: string;
 	channel_id: string;
 	guild_id?: string;
+};
+
+export type CHANNEL_RECIPIENT_ADD = {
+	user: {
+		username: string;
+		public_flags: number;
+		id: string;
+		global_name: string;
+		discriminator: string;
+		clan: null;
+		avatar_decoration_data: null;
+		avatar: string;
+	};
+	channel_id: string;
 };
 
 export type CHANNEL_STATUSES = {
@@ -360,7 +379,7 @@ export type GUILD_CREATE = {
 		format_type: number;
 		description: null | string;
 		available: boolean;
-		asset: string;
+		asset?: string;
 	}[];
 	stage_instances: [];
 	roles: {
@@ -429,7 +448,8 @@ export type GUILD_CREATE = {
 		};
 		status: string;
 		client_status: {
-			web: string;
+			web?: string;
+			desktop: string;
 		};
 		broadcast: null;
 		activities: {
@@ -607,6 +627,7 @@ export type GUILD_CREATE = {
 
 export type GUILD_DELETE = {
 	id: string;
+	unavailable: boolean;
 };
 
 export type GUILD_EMOJIS_UPDATE = {
@@ -1075,7 +1096,18 @@ export type GUILD_SCHEDULED_EVENT_CREATE = {
 	sku_ids: [];
 	scheduled_start_time: string;
 	scheduled_end_time: null | string;
-	recurrence_rule: null;
+	recurrence_rule: null | {
+		start: string;
+		interval: number;
+		frequency: number;
+		end: null;
+		count: null;
+		by_year_day: null;
+		by_weekday: number[];
+		by_n_weekday: null;
+		by_month_day: null;
+		by_month: null;
+	};
 	privacy_level: number;
 	name: string;
 	image: null | string;
@@ -1084,9 +1116,10 @@ export type GUILD_SCHEDULED_EVENT_CREATE = {
 	guild_id: string;
 	entity_type: number;
 	entity_metadata: null | {
-		location: string;
+		location?: string;
+		speaker_ids?: [];
 	};
-	entity_id: null;
+	entity_id: null | string;
 	description: string;
 	creator_id: string;
 	channel_id: null | string;
@@ -1130,7 +1163,7 @@ export type GUILD_SCHEDULED_EVENT_UPDATE = {
 		start: string;
 		interval: number;
 		frequency: number;
-		end: null;
+		end: null | string;
 		count: null;
 		by_year_day: null;
 		by_weekday: number[];
@@ -1695,9 +1728,9 @@ export type MESSAGE_CREATE = {
 				id: string;
 				emoji?: {
 					name: string;
-					id: string;
+					id?: string;
 				};
-				custom_id: string;
+				custom_id?: string;
 			}[];
 		}[];
 		channel_id: string;
@@ -2120,6 +2153,14 @@ export type MESSAGE_UPDATE = {
 				proxy_icon_url: string;
 				icon_url: string;
 			};
+			image: {
+				width: number;
+				url: string;
+				proxy_url: string;
+				placeholder_version: number;
+				placeholder: string;
+				height: number;
+			};
 		}[];
 		edited_timestamp: null | string;
 		content: string;
@@ -2169,7 +2210,7 @@ export type MESSAGE_UPDATE = {
 			filename: string;
 			content_type: string;
 			content_scan_version?: number;
-			flags: number;
+			flags?: number;
 		}[];
 		sticker_items?: {
 			name: string;
@@ -2466,7 +2507,7 @@ export type NOTIFICATION_CENTER_ITEM_CREATE = {
 		username: string;
 		public_flags: number;
 		id: string;
-		global_name: string;
+		global_name: null | string;
 		discriminator: string;
 		clan: null;
 		avatar_decoration_data: null;
@@ -3215,7 +3256,7 @@ export type RELATIONSHIP_ADD = {
 		username: string;
 		public_flags: number;
 		id: string;
-		global_name: string;
+		global_name: null | string;
 		discriminator: string;
 		clan: null;
 		avatar_decoration_data: null;
@@ -4191,6 +4232,7 @@ export type Events =
 	| { t: "CHANNEL_DELETE", d: CHANNEL_DELETE }
 	| { t: "CHANNEL_PINS_ACK", d: CHANNEL_PINS_ACK }
 	| { t: "CHANNEL_PINS_UPDATE", d: CHANNEL_PINS_UPDATE }
+	| { t: "CHANNEL_RECIPIENT_ADD", d: CHANNEL_RECIPIENT_ADD }
 	| { t: "CHANNEL_STATUSES", d: CHANNEL_STATUSES }
 	| { t: "CHANNEL_UPDATE", d: CHANNEL_UPDATE }
 	| { t: "CONTENT_INVENTORY_INBOX_STALE", d: CONTENT_INVENTORY_INBOX_STALE }
